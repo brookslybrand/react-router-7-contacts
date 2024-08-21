@@ -7,7 +7,7 @@ import {
 
 export const routes: RoutesConfig = [
   index("routes/home.tsx"),
-  route("/contacts/:contactId", "routes/contact.tsx"),
-  route("/contacts/:contactId/edit", "routes/edit-contact.tsx"),
-  route("/contacts/:contactId/destroy", "routes/destroy-contact.tsx"),
+  route("/contacts/:contactId", "routes/contacts/details.tsx"),
+  route("/contacts/:contactId/edit", "routes/contacts/edit.tsx"),
+  route("/contacts/:contactId/destroy", "routes/contacts/destroy.tsx"),
 ];

@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "react-router dev",
     "build": "react-router build",
-    "start": "react-router serve ./build/server/index.js",
+    "start": "react-router-serve ./build/server/index.js",
     "typecheck": "tsc"
   },
   "dependencies": {
     "@react-router/node": "^0.0.0-nightly-a5f191b5e-20240820",
     "@react-router/remix-v2-routes": "^0.0.0-nightly-a5f191b5e-20240820",
+    "@react-router/serve": "^0.0.0-nightly-a5f191b5e-20240820",
     "isbot": "^5",
     "match-sorter": "^6.3.4",
     "react": "^18.3.1",

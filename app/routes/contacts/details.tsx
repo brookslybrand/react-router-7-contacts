@@ -8,8 +8,8 @@ import {
 import type { FunctionComponent } from "react";
 import invariant from "tiny-invariant";
 
-import type { ContactRecord } from "../data";
-import { getContact, updateContact } from "../data";
+import type { ContactRecord } from "~/data";
+import { getContact, updateContact } from "~/data";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, "Missing contactId param");
