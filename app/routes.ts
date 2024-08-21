@@ -1,4 +1,13 @@
-import { route, type RoutesConfig } from "@react-router/dev/routes";
-import { remixRoutes } from "@react-router/remix-v2-routes";
+import {
+  route,
+  layout,
+  index,
+  type RoutesConfig,
+} from "@react-router/dev/routes";
 
-export const routes: RoutesConfig = [...(await remixRoutes())];
+export const routes: RoutesConfig = [
+  index("routes/home.tsx"),
+  route("/contacts/:contactId", "routes/contact.tsx"),
+  route("/contacts/:contactId/edit", "routes/edit-contact.tsx"),
+  route("/contacts/:contactId/destroy", "routes/destroy-contact.tsx"),
+];
