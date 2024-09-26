@@ -2,10 +2,10 @@ import {
   route,
   layout,
   index,
-  type RoutesConfig,
+  type RouteConfig,
 } from "@react-router/dev/routes";
 
-export const routes: RoutesConfig = [
+export const routes: RouteConfig = [
   index("routes/home.tsx"),
   route("/contacts/:contactId", "routes/contacts/details.tsx"),
   route("/contacts/:contactId/edit", "routes/contacts/edit.tsx"),
