@@ -1,3 +1,4 @@
+import type * as Route from ".react-router/+types.root";
 import {
   Form,
   Links,
@@ -24,20 +25,19 @@ export const links: LinksFunction = () => [
 ];
 
 export const action = async () => {
-  console.log("in the action");
   const contact = await createEmptyContact();
   return redirect(`/contacts/${contact.id}/edit`);
 };
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request }: Route.LoaderArgs) => {
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
   const contacts = await getContacts(q);
   return { contacts, q };
 };
 
-export default function App() {
-  const { contacts, q } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+export default function App({ loaderData }: Route.DefaultProps) {
+  const { contacts, q } = loaderData;
   const navigation = useNavigation();
   const submit = useSubmit();
   const searching =

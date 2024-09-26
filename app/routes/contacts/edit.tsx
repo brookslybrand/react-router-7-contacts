@@ -1,11 +1,9 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
-import { Form, redirect, useLoaderData, useNavigate } from "react-router";
-import invariant from "tiny-invariant";
+import type * as Route from "./+types.edit";
+import { Form, redirect, useNavigate } from "react-router";
 
 import { getContact, updateContact } from "~/data";
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-  invariant(params.contactId, "Missing contactId param");
+export const loader = async ({ params }: Route.LoaderArgs) => {
   const contact = await getContact(params.contactId);
   if (!contact) {
     throw new Response("Not Found", { status: 404 });
@@ -13,16 +11,15 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   return { contact };
 };
 
-export const action = async ({ params, request }: ActionFunctionArgs) => {
-  invariant(params.contactId, "Missing contactId param");
+export const action = async ({ params, request }: Route.ActionArgs) => {
   const formData = await request.formData();
   const updates = Object.fromEntries(formData);
   await updateContact(params.contactId, updates);
   return redirect(`/contacts/${params.contactId}`);
 };
 
-export default function EditContact() {
-  const { contact } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+export default function EditContact({ loaderData }: Route.DefaultProps) {
+  const { contact } = loaderData;
   const navigate = useNavigate();
 
   return (

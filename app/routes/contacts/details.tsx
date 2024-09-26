@@ -1,18 +1,11 @@
-import {
-  ActionFunctionArgs,
-  Form,
-  LoaderFunctionArgs,
-  useFetcher,
-  useLoaderData,
-} from "react-router";
+import type * as Route from "./+types.details";
+import { Form, useFetcher } from "react-router";
 import type { FunctionComponent } from "react";
-import invariant from "tiny-invariant";
 
 import type { ContactRecord } from "~/data";
 import { getContact, updateContact } from "~/data";
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
-  invariant(params.contactId, "Missing contactId param");
+export const loader = async ({ params }: Route.LoaderArgs) => {
   const contact = await getContact(params.contactId);
   if (!contact) {
     throw new Response("Not Found", { status: 404 });
@@ -20,16 +13,17 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   return { contact };
 };
 
-export const action = async ({ params, request }: ActionFunctionArgs) => {
-  invariant(params.contactId, "Missing contactId param");
+export const action = async ({ params, request }: Route.ActionArgs) => {
   const formData = await request.formData();
-  return updateContact(params.contactId, {
+  const contact = updateContact(params.contactId, {
     favorite: formData.get("favorite") === "true",
   });
+
+  return { contact };
 };
 
-export default function Contact() {
-  const { contact } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+export default function Contact({ loaderData }: Route.DefaultProps) {
+  const { contact } = loaderData;
 
   return (
     <div id="contact">
@@ -91,7 +85,7 @@ export default function Contact() {
 const Favorite: FunctionComponent<{
   contact: Pick<ContactRecord, "favorite">;
 }> = ({ contact }) => {
-  const fetcher = useFetcher();
+  const fetcher = useFetcher<Route.ActionData>();
   const favorite = fetcher.formData
     ? fetcher.formData.get("favorite") === "true"
     : contact.favorite;
