@@ -39,8 +39,6 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 export default function App({ loaderData }: Route.ComponentProps) {
   if (!loaderData) return null;
 
-  console.log(loaderData);
-
   const { contacts, q } = loaderData;
   const navigation = useNavigation();
   const submit = useSubmit();
