@@ -1,4 +1,4 @@
-import type * as Route from "./+types.details";
+import * as Route from "./+types.details";
 import { Form, useFetcher } from "react-router";
 import type { FunctionComponent } from "react";
 
@@ -22,7 +22,7 @@ export const action = async ({ params, request }: Route.ActionArgs) => {
   return { contact };
 };
 
-export default function Contact({ loaderData }: Route.DefaultProps) {
+export default function Contact({ loaderData }: Route.ComponentProps) {
   const { contact } = loaderData;
 
   return (

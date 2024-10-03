@@ -18,7 +18,7 @@ export const action = async ({ params, request }: Route.ActionArgs) => {
   return redirect(`/contacts/${params.contactId}`);
 };
 
-export default function EditContact({ loaderData }: Route.DefaultProps) {
+export default function EditContact({ loaderData }: Route.ComponentProps) {
   const { contact } = loaderData;
   const navigate = useNavigate();
 
