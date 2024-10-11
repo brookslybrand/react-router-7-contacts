@@ -1,11 +1,12 @@
-import { Form, useFetcher, useLoaderData } from "@remix-run/react";
+import * as Route from "./+types.details";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
+import { Form, useFetcher } from "react-router";
 import type { FunctionComponent } from "react";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
+
 import invariant from "tiny-invariant";
 
-import { getContact, updateContact } from "../data";
-import type { ContactRecord } from "../data";
+import { getContact, updateContact } from "~/data";
+import type { ContactRecord } from "~/data";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   invariant(params.contactId, "Missing contactId param");
@@ -13,7 +14,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   if (!contact) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json({ contact });
+  return { contact };
 };
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
@@ -24,8 +25,8 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
   });
 };
 
-export default function Contact() {
-  const { contact } = useLoaderData<typeof loader>();
+export default function Contact({ loaderData }: Route.ComponentProps) {
+  const { contact } = loaderData;
 
   return (
     <div id="contact">
