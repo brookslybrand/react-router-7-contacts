@@ -1,47 +1,36 @@
-import type * as Route from "./+types.root";
+import { json } from "@remix-run/node";
 import {
   Form,
   Links,
+  LiveReload,
   Meta,
+  NavLink,
+  Outlet,
   Scripts,
   ScrollRestoration,
-  LinksFunction,
-  Outlet,
   useLoaderData,
-  redirect,
-  NavLink,
   useNavigation,
-  LoaderFunctionArgs,
   useSubmit,
-} from "react-router";
-
-import { createEmptyContact, getContacts } from "./data";
-
-import appStylesHref from "./app.css?url";
+} from "@remix-run/react";
 import { useEffect } from "react";
 
-export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: appStylesHref },
-];
+import { getContacts } from "./data";
+import appStylesHref from "./app.css?url";
 
-export const action = async () => {
-  const contact = await createEmptyContact();
-  return redirect(`/contacts/${contact.id}/edit`);
-};
+export const links = () => [{ rel: "stylesheet", href: appStylesHref }];
 
-export const loader = async ({ request }: Route.LoaderArgs) => {
+export const loader = async ({ request }: { request: Request }) => {
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
   const contacts = await getContacts(q);
-  return { contacts, q };
+  return json({ contacts, q });
 };
 
-export default function App({ loaderData }: Route.ComponentProps) {
-  if (!loaderData) return null;
-
-  const { contacts, q } = loaderData;
+export default function App() {
+  const { contacts, q } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   const submit = useSubmit();
+
   const searching =
     navigation.location &&
     new URLSearchParams(navigation.location.search).has("q");
@@ -56,8 +45,6 @@ export default function App({ loaderData }: Route.ComponentProps) {
   return (
     <html lang="en">
       <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
       </head>
@@ -67,26 +54,24 @@ export default function App({ loaderData }: Route.ComponentProps) {
           <div>
             <Form
               id="search-form"
+              role="search"
               onChange={(event) => {
                 const isFirstSearch = q === null;
                 submit(event.currentTarget, {
                   replace: !isFirstSearch,
                 });
               }}
-              role="search"
             >
               <input
                 id="q"
                 aria-label="Search contacts"
-                className={
-                  navigation.state === "loading" && !searching ? "loading" : ""
-                }
-                defaultValue={q || ""}
                 placeholder="Search"
                 type="search"
                 name="q"
+                defaultValue={q || ""}
+                className={searching ? "loading" : ""}
               />
-              <div aria-hidden hidden={!searching} id="search-spinner" />{" "}
+              <div id="search-spinner" aria-hidden hidden={!searching} />
             </Form>
             <Form method="post">
               <button type="submit">New</button>
@@ -123,13 +108,16 @@ export default function App({ loaderData }: Route.ComponentProps) {
           </nav>
         </div>
         <div
-          className={navigation.state === "loading" ? "loading" : ""}
+          className={
+            navigation.state === "loading" && !searching ? "loading" : ""
+          }
           id="detail"
         >
           <Outlet />
         </div>
         <ScrollRestoration />
         <Scripts />
+        <LiveReload />
       </body>
     </html>
   );

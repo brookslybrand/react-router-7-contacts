@@ -1,6 +1,6 @@
 # React Router v7 - Contacts Tutorial
 
-Remix is becoming React Router in v7. This repo is the [Remix tutorial](https://remix.run/docs/en/main/start/tutorial), but using React Router 7 (nightly).
+Remix is becoming React Router in v7. This repo is the [Remix tutorial](https://remix.run/docs/en/main/start/tutorial), but using React Router 7 (pre-release).
 
 If this whole Remix -> React Router thing is news to you, please watch/read:
 

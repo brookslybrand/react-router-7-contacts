@@ -1,29 +1,31 @@
-import * as Route from "./+types.details";
-import { Form, useFetcher } from "react-router";
+import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import type { FunctionComponent } from "react";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import invariant from "tiny-invariant";
 
-import type { ContactRecord } from "~/data";
-import { getContact, updateContact } from "~/data";
+import { getContact, updateContact } from "../data";
+import type { ContactRecord } from "../data";
 
-export const loader = async ({ params }: Route.LoaderArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
+  invariant(params.contactId, "Missing contactId param");
   const contact = await getContact(params.contactId);
   if (!contact) {
     throw new Response("Not Found", { status: 404 });
   }
-  return { contact };
+  return json({ contact });
 };
 
-export const action = async ({ params, request }: Route.ActionArgs) => {
+export const action = async ({ params, request }: ActionFunctionArgs) => {
+  invariant(params.contactId, "Missing contactId param");
   const formData = await request.formData();
-  const contact = updateContact(params.contactId, {
+  return updateContact(params.contactId, {
     favorite: formData.get("favorite") === "true",
   });
-
-  return { contact };
 };
 
-export default function Contact({ loaderData }: Route.ComponentProps) {
-  const { contact } = loaderData;
+export default function Contact() {
+  const { contact } = useLoaderData<typeof loader>();
 
   return (
     <div id="contact">
@@ -85,7 +87,7 @@ export default function Contact({ loaderData }: Route.ComponentProps) {
 const Favorite: FunctionComponent<{
   contact: Pick<ContactRecord, "favorite">;
 }> = ({ contact }) => {
-  const fetcher = useFetcher<Route.ActionData>();
+  const fetcher = useFetcher();
   const favorite = fetcher.formData
     ? fetcher.formData.get("favorite") === "true"
     : contact.favorite;
